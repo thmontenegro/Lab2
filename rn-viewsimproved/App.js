@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
+import { View, Text, TextInput, KeyboardAvoidingView, Platform, StyleSheet, FlatList } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
@@ -11,12 +11,18 @@ export default function App() {
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView 
           style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"} 
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <Text style={styles.title}>To-Do</Text>
-          <View style={{ flex: 1 }}>
-            {tasks.map((t, i) => <Text key={i} style={styles.task}>{t}</Text>)}
-          </View>
+          <FlatList
+            data={tasks}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.taskContainer}>
+                <Text style={styles.task}>* {item}</Text>
+              </View>
+            )}
+          />
           <TextInput
             style={styles.input}
             value={task}
@@ -45,12 +51,16 @@ const styles = StyleSheet.create({
   input: { 
     borderBottomWidth: 1, 
     borderColor: "#d3d3d3", 
-    width: "90%", 
+    width: "90%", padding: 10, 
+    alignSelf: 'center', 
+    marginBottom: 20 
+  },
+  taskContainer: { 
     padding: 10, 
-    alignSelf: 'center'
+    borderBottomWidth: 1, 
+    borderColor: '#eee' 
   },
   task: { 
-    fontSize: 20, 
-    padding: 10 
+    fontSize: 20 
   }
 });
